@@ -1,0 +1,3 @@
+db.url=jdbc:mysql://localhost:3306/projekat_baze_podataka
+db.user=root
+db.password=__UPISI_SVOJU_SIFRU__
