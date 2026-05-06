@@ -10,17 +10,18 @@ import java.awt.event.ActionListener;
  * Generisano na osnovu zahteva studenta koji opisuje strukturu forme i potrebne komponente.
  */
 
-public class LoginView extends JFrame {
+public class RegisterView extends JFrame {
 
     private JTextField tfUsername;
     private JPasswordField tfPassword;
-    private JButton btnLogin;
+    private JPasswordField tfPasswordConfirm;
     private JButton btnRegister;
+    private JButton btnCancel;
 
-    public LoginView() {
-        setTitle("Prijava - Administrator");
-        setSize(400, 250);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public RegisterView() {
+        setTitle("Registracija - Administrator");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
 
@@ -29,13 +30,13 @@ public class LoginView extends JFrame {
         gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        //Naslov
-        JLabel lblTitle = new JLabel("Prijava na sistem", SwingConstants.CENTER);
-        lblTitle.setFont(new Font("SansSerif", Font.BOLD, 18));
+        // Naslov
+        JLabel lblTitle = new JLabel("Registracija novog korisnika", SwingConstants.CENTER);
+        lblTitle.setFont(new Font("SansSerif", Font.BOLD, 16));
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
         panel.add(lblTitle, gbc);
 
-        //Korisnicko ime
+        // Korisnicko ime
         gbc.gridwidth = 1;
         gbc.gridx = 0; gbc.gridy = 1;
         panel.add(new JLabel("Korisnicko ime:"), gbc);
@@ -43,27 +44,34 @@ public class LoginView extends JFrame {
         gbc.gridx = 1;
         panel.add(tfUsername, gbc);
 
-        //Lozinka
+        // Lozinka
         gbc.gridx = 0; gbc.gridy = 2;
         panel.add(new JLabel("Lozinka:"), gbc);
         tfPassword = new JPasswordField(15);
         gbc.gridx = 1;
         panel.add(tfPassword, gbc);
 
-        //Dugmad
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        btnLogin = new JButton("Prijavi se");
-        btnRegister = new JButton("Registruj se");
-        btnPanel.add(btnLogin);
-        btnPanel.add(btnRegister);
+        // Potvrda lozinke
+        gbc.gridx = 0; gbc.gridy = 3;
+        panel.add(new JLabel("Potvrda lozinke:"), gbc);
+        tfPasswordConfirm = new JPasswordField(15);
+        gbc.gridx = 1;
+        panel.add(tfPasswordConfirm, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
+        // Dugmad
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        btnRegister = new JButton("Registruj se");
+        btnCancel = new JButton("Otkazi");
+        btnPanel.add(btnRegister);
+        btnPanel.add(btnCancel);
+
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
         panel.add(btnPanel, gbc);
 
         add(panel);
     }
 
-    //Getteri za podatke iz forme
+    // Getteri za podatke iz forme
 
     public String getUsername() {
         return tfUsername.getText().trim();
@@ -73,24 +81,28 @@ public class LoginView extends JFrame {
         return new String(tfPassword.getPassword());
     }
 
-    //Listeneri koje controller postavlja
-
-    public void addLoginListener(ActionListener listener) {
-        btnLogin.addActionListener(listener);
+    public String getPasswordConfirm() {
+        return new String(tfPasswordConfirm.getPassword());
     }
+
+    // Listeneri koje controller postavlja
 
     public void addRegisterListener(ActionListener listener) {
         btnRegister.addActionListener(listener);
     }
 
-    //Prikaz poruka
+    public void addCancelListener(ActionListener listener) {
+        btnCancel.addActionListener(listener);
+    }
+
+    // Prikaz poruka
 
     public void showError(String message) {
         JOptionPane.showMessageDialog(this, message, "Greska", JOptionPane.ERROR_MESSAGE);
     }
 
     public void showWarning(String message) {
-        JOptionPane.showMessageDialog(this, message, "Greska", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "Upozorenje", JOptionPane.WARNING_MESSAGE);
     }
 
     public void showSuccess(String message) {
