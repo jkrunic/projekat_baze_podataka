@@ -1,8 +1,8 @@
 package rs.raf.bp.controller;
 
-
 import rs.raf.bp.model.UserFileManager;
 import rs.raf.bp.view.LoginView;
+import rs.raf.bp.view.RegisterView;
 
 public class LoginController {
 
@@ -14,7 +14,7 @@ public class LoginController {
         this.userModel = userModel;
 
         this.view.addLoginListener(e -> handleLogin());
-        //Dovrsi RegisterListener
+        this.view.addRegisterListener(e -> handleRegister());
     }
 
     private void handleLogin() {
@@ -29,10 +29,15 @@ public class LoginController {
         if (userModel.login(username, password)) {
             view.showSuccess("Uspesna prijava! Dobrodosli, " + username + ".");
             view.dispose();
-            //Dovrsi adminView i AdminController
+            //TODO: Dovrsi adminView i AdminController
         } else {
             view.showError("Pogresno korisnicko ime ili lozinka.");
         }
     }
 
+    private void handleRegister() {
+        RegisterView registerView = new RegisterView();
+        new RegisterController(registerView, userModel);
+        registerView.setVisible(true);
+    }
 }
