@@ -13,8 +13,6 @@ public class DatabaseConnection {
     private static final String user;
     private static final String password;
 
-    // Staticki blok - izvrsava se jednom pri ucitavanju klase
-    // Ucitava kredencijale iz db.properties fajla iz resources foldera
     static {
         Properties props = new Properties();
         try (InputStream input = DatabaseConnection.class
