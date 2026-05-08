@@ -108,4 +108,38 @@ public class SesijaModel {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean postojiPreklapanje(int idSesije, String datum, String pocetak, String zavrsetak) {
+        String query =
+                "SELECT COUNT(*) FROM sesija s " +
+                        "JOIN izvodjenje i ON s.id_izvodjenja = i.id_izvodjenje " +
+                        "WHERE i.id_laboratorija = (" +
+                        "    SELECT i2.id_laboratorija FROM sesija s2 " +
+                        "    JOIN izvodjenje i2 ON s2.id_izvodjenja = i2.id_izvodjenje " +
+                        "    WHERE s2.id_sesija = ?" +
+                        ") " +
+                        "AND s.datum_sesije = ? " +
+                        "AND s.id_sesija != ? " +
+                        "AND ? < s.vreme_zavrsetka " +
+                        "AND ? > s.vreme_pocetka";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, idSesije);
+            ps.setString(2, datum);
+            ps.setInt(3, idSesije);
+            ps.setString(4, pocetak);
+            ps.setString(5, zavrsetak);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
 }

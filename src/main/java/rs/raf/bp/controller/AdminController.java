@@ -90,12 +90,18 @@ public class AdminController {
             int id = Integer.parseInt(selected);
             int brojDataset = Integer.parseInt(brojStr);
 
+            if (sesijaModel.postojiPreklapanje(id, datum, pocetak, zavrsetak)) {
+                view.showWarning("U toj laboratoriji vec postoji sesija u isto vreme.");
+                return;
+            }
+
             if (sesijaModel.updateSesija(id, datum, pocetak, zavrsetak, brojDataset)) {
                 view.showSuccess("Sesija uspesno azurirana.");
                 loadSesije();
             } else {
                 view.showError("Azuriranje nije uspelo.");
             }
+
         } catch (NumberFormatException e) {
             view.showWarning("Broj datasetova mora biti ceo broj.");
         }
