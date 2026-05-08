@@ -1,6 +1,9 @@
 package rs.raf.bp.controller;
 
+import rs.raf.bp.model.LaboratorijaModel;
+import rs.raf.bp.model.SesijaModel;
 import rs.raf.bp.model.UserFileManager;
+import rs.raf.bp.view.AdminView;
 import rs.raf.bp.view.LoginView;
 import rs.raf.bp.view.RegisterView;
 
@@ -29,7 +32,11 @@ public class LoginController {
         if (userModel.login(username, password)) {
             view.showSuccess("Uspesna prijava! Dobrodosli, " + username + ".");
             view.dispose();
-            //TODO: Dovrsi adminView i AdminController
+            AdminView adminView = new AdminView(username);
+            SesijaModel sesijaModel = new SesijaModel();
+            LaboratorijaModel labModel = new LaboratorijaModel();
+            new AdminController(adminView, sesijaModel, labModel);
+            adminView.setVisible(true);
         } else {
             view.showError("Pogresno korisnicko ime ili lozinka.");
         }

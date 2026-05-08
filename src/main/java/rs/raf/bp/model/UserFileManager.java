@@ -41,8 +41,8 @@ public class UserFileManager {
 
     public boolean register(String username, String password) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            writer.write(username + ";" + password);
             writer.newLine();
+            writer.write(username + ";" + password);
             return true;
         } catch (IOException e) {
             e.printStackTrace();

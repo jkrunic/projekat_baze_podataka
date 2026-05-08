@@ -6,21 +6,20 @@ import java.util.List;
 
 public class LaboratorijaModel {
 
-
-    public List<Object[]> getSveLaboratorije() {
+    public List<String[]> getSveLaboratorije() {
         String query =
                 "SELECT id_laboratorija, naziv_laboratorije " +
                         "FROM laboratorija " +
                         "ORDER BY id_laboratorija ASC";
 
-        List<Object[]> result = new ArrayList<>();
+        List<String[]> result = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                Object[] row = new Object[2];
-                row[0] = rs.getInt("id_laboratorija");
+                String[] row = new String[2];
+                row[0] = String.valueOf(rs.getInt("id_laboratorija"));
                 row[1] = rs.getString("naziv_laboratorije");
                 result.add(row);
             }
@@ -30,8 +29,7 @@ public class LaboratorijaModel {
         return result;
     }
 
-
-    public Object[] getLaboratorijaDetalji(int idLab) {
+    public String[] getLaboratorijaDetalji(int idLab) {
         String query =
                 "SELECT l.naziv_laboratorije, l.opis_lokacije, l.kapacitet_skl_rezerv, " +
                         "(SELECT COUNT(*) FROM izvodjenje i WHERE i.id_laboratorija = l.id_laboratorija) AS broj_izvodjenja, " +
@@ -47,13 +45,13 @@ public class LaboratorijaModel {
             ps.setInt(1, idLab);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new Object[]{
+                    return new String[]{
                             rs.getString("naziv_laboratorije"),
                             rs.getString("opis_lokacije"),
-                            rs.getInt("kapacitet_skl_rezerv"),
-                            rs.getInt("broj_izvodjenja"),
-                            rs.getInt("broj_alata"),
-                            rs.getInt("broj_aktivnih")
+                            String.valueOf(rs.getInt("kapacitet_skl_rezerv")),
+                            String.valueOf(rs.getInt("broj_izvodjenja")),
+                            String.valueOf(rs.getInt("broj_alata")),
+                            String.valueOf(rs.getInt("broj_aktivnih"))
                     };
                 }
             }
@@ -71,7 +69,6 @@ public class LaboratorijaModel {
 
             cs.setInt(1, idLab);
 
-            // Procedura vraca SELECT sa porukom kao result set
             boolean hasResultSet = cs.execute();
             if (hasResultSet) {
                 try (ResultSet rs = cs.getResultSet()) {
@@ -85,4 +82,26 @@ public class LaboratorijaModel {
             throw new RuntimeException("Greska prilikom brisanja laboratorije: " + e.getMessage(), e);
         }
     }
+
+    public int brojIstrazivacaULab(int idLab) {
+        String query = "SELECT COUNT(*) FROM tim_izvodjaca t " +
+                "JOIN izvodjenje i ON t.id_izvodjenje = i.id_izvodjenje " +
+                "WHERE i.id_laboratorija = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, idLab);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 0;
+    }
+
+
 }
